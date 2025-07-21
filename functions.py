@@ -36,7 +36,28 @@ def random_initial_state_generator(L, concentration): # Checked OK
 
 
 
-@jit(nopython=True, parallel=True)
+def all_up_initial_state_generator(L, concentration): # Checked OK
+    state = np.ones((L, L, L))
+    index_list = []
+
+
+    for i in prange(L):
+        for j in prange(L):
+            for k in prange(L):
+                index_list.append([i, j, k])
+
+    rn.shuffle(index_list)
+
+    for i in prange(int(round(((1 - concentration) * L * L * L), 5))):
+        coordinate = index_list.pop(0)
+        state[coordinate[0], coordinate[1], coordinate[2]] = 0
+    
+    return state
+
+
+
+# @jit(nopython=True, parallel=True)
+@njit
 def initial_state_test(L, state):
     test_conc = 0
 
@@ -50,7 +71,8 @@ def initial_state_test(L, state):
 
 
 
-@jit(nopython=True, parallel=True)
+# @jit(nopython=True, parallel=True)
+@njit
 def calculate_magnetization_per_spin(state, L): # Checked OK
   magnetization = 0
 
@@ -63,7 +85,8 @@ def calculate_magnetization_per_spin(state, L): # Checked OK
 
 
 
-@jit(nopython=True, parallel=True)
+# @jit(nopython=True, parallel=True)
+@njit
 def calculate_energy_per_spin(state, L, J, B=0): # Checked OK
     energy_J = 0
     energy_B = 0
@@ -85,7 +108,8 @@ def calculate_energy_per_spin(state, L, J, B=0): # Checked OK
 
 
 
-@jit(nopython=True, parallel=True)
+# @jit(nopython=True, parallel=True)
+@njit
 def next_state_generator(state, L):
     site = np.array([rn.randint(0, L - 1), rn.randint(0, L - 1), rn.randint(0, L - 1)])
     site_spin = state[site[0], site[1], site[2]]
@@ -99,7 +123,8 @@ def next_state_generator(state, L):
 
 
 
-@jit(nopython=True)
+# @jit(nopython=True)
+@njit
 def change_in_energy(current_state, next_state, site, L, J, B=0):
     i = site[0]
     j = site[1]
@@ -120,7 +145,8 @@ def change_in_energy(current_state, next_state, site, L, J, B=0):
 
 
 
-@jit(nopython=True, parallel=True)
+# @jit(nopython=True, parallel=True)
+@njit
 def central_difference_derivative(x_array, y_array):
     N = len(x_array)
     cnt_der = np.zeros((N - 2))
@@ -146,7 +172,7 @@ def ising_mc_thermalization(random_state, T, L, therm_steps, J):
             k = rn.randint(L)
 
             if next_state[i, j , k] == 0:
-                break
+                continue
 
             next_state[i, j , k] = -1 * state[i, j, k]
             energy_change = change_in_energy(state, next_state, [i, j, k], L, J)
@@ -168,7 +194,7 @@ def ising_mc_simulation(thermalized_state, T, L, mc_steps, J, skip_step = 10):
     state = thermalized_state.copy()
 
     energy_per_spin = 0
-    magnetization_per_spin = 0
+    magnetization_per_spin_arr = np.zeros(((mc_steps // skip_step) + 1))
 
     for l in prange(mc_steps):
         for s in prange(L * L * L):
@@ -179,7 +205,7 @@ def ising_mc_simulation(thermalized_state, T, L, mc_steps, J, skip_step = 10):
             k = rn.randint(L)
 
             if next_state[i, j , k] == 0:
-                break
+                continue
 
             next_state[i, j , k] = -1 * state[i, j, k]
             energy_change = change_in_energy(state, next_state, [i, j, k], L, J)
@@ -194,7 +220,11 @@ def ising_mc_simulation(thermalized_state, T, L, mc_steps, J, skip_step = 10):
     
         if (l + 1) % skip_step == 0:
             energy_per_spin += calculate_energy_per_spin(state, L, J, B=0)
-            magnetization_per_spin += calculate_magnetization_per_spin(state, L)
+            magnetization_per_spin_arr[int((l + 1) / skip_step)] = calculate_magnetization_per_spin(state, L)
     
-    return ((energy_per_spin * skip_step) / mc_steps), ((magnetization_per_spin * skip_step) / mc_steps)
+    magnetization_per_spin = magnetization_per_spin_arr.mean()
+    
+    susceptibility_per_spin = np.abs(((np.square(magnetization_per_spin_arr)).mean() - (magnetization_per_spin**2)) / T)
+    
+    return ((energy_per_spin * skip_step) / mc_steps), magnetization_per_spin, susceptibility_per_spin
 
