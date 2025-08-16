@@ -3,12 +3,26 @@ import matplotlib.pyplot as plt
 
 
 
-concentration_array = np.load("concentration_array_10.npy")
-temp_array = np.load("temp_array_10.npy")
-magnetization_v_temp_arr = np.load("magnetization_v_temp_arr_10.npy")
-energy_v_temp_arr = np.load("energy_v_temp_arr_10.npy")
-specific_heat_v_temp_arr = np.load("specific_heat_v_temp_arr_10.npy")
-susceptibility_v_temp_arr = np.load("susceptibility_v_temp_arr_10.npy")
+concentration_array_10 = np.load("concentration_array_10.npy")
+temp_array_10 = np.load("temp_array_10.npy")
+magnetization_v_temp_arr_10 = np.load("magnetization_v_temp_arr_10.npy")
+energy_v_temp_arr_10 = np.load("energy_v_temp_arr_10.npy")
+specific_heat_v_temp_arr_10 = np.load("specific_heat_v_temp_arr_10.npy")
+susceptibility_v_temp_arr_10 = np.load("susceptibility_v_temp_arr_10.npy")
+
+concentration_array_15 = np.load("concentration_array_15.npy")
+temp_array_15 = np.load("temp_array_15.npy")
+magnetization_v_temp_arr_15 = np.load("magnetization_v_temp_arr_15.npy")
+energy_v_temp_arr_15 = np.load("energy_v_temp_arr_15.npy")
+specific_heat_v_temp_arr_15 = np.load("specific_heat_v_temp_arr_15.npy")
+susceptibility_v_temp_arr_15 = np.load("susceptibility_v_temp_arr_15.npy")
+
+concentration_array_20 = np.load("concentration_array_20.npy")
+temp_array_20 = np.load("temp_array_20.npy")
+magnetization_v_temp_arr_20 = np.load("magnetization_v_temp_arr_20.npy")
+energy_v_temp_arr_20 = np.load("energy_v_temp_arr_20.npy")
+specific_heat_v_temp_arr_20 = np.load("specific_heat_v_temp_arr_20.npy")
+susceptibility_v_temp_arr_20 = np.load("susceptibility_v_temp_arr_20.npy")
 
 
 plt.tight_layout()
