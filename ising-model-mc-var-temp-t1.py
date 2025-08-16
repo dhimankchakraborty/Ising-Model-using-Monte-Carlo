@@ -8,7 +8,7 @@ from functions import *
 
 
 
-concentration = 0.3
+concentration = 0.2
 J = 1         # coupling constant
 L = 20        # system size
 
@@ -69,6 +69,11 @@ for i, temp in enumerate(temp_array):
 specific_heat_v_temp_arr = central_difference_derivative(temp_array, energy_v_temp_arr)
 
 
+for i in range(len(temp_array)-2):
+    # i = i + 1
+    print(f'{temp_array[i + 1]}|{np.round(np.abs(magnetization_v_temp_arr[i + 1]), 5)}|{np.round(specific_heat_v_temp_arr[i], 5)}|{np.round(susceptibility_v_temp_arr[i + 1], 5)}')
+# print(len(temp_array))
+# print(len(specific_heat_v_temp_arr))
 
 plt.plot(temp_array, np.abs(magnetization_v_temp_arr))
 plt.title(f"Magnetization per Particle vs Themperature \nSystem Size (L): {L}, Interaction (J): {J}, Concentration: {concentration} \nMonte Carlo Step: {mc_steps}")

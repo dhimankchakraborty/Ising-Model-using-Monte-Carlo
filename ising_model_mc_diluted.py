@@ -234,14 +234,14 @@ def ising_mc_simulation(thermalized_state, T, L, mc_steps, J, skip_step = 10):
 
 T = 0.1
 J = 1
-L = 20
+L = 10
 
 concentration_0 = 1
-concentration_max = 0.02
-concentration_step_size = -0.02
+concentration_max = 0.05
+concentration_step_size = -0.05
 
-therm_steps = 1000
-mc_steps = 1000
+therm_steps = 10000
+mc_steps = 100000
 skip_step = 1
 simulation_step_no = 1
 

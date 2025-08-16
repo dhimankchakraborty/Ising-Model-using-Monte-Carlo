@@ -188,7 +188,7 @@ def ising_mc_thermalization(random_state, T, L, therm_steps, J):
     return state
 
 
-
+# @jit(nopython=True, parallel=True)
 @njit
 def ising_mc_simulation(thermalized_state, T, L, mc_steps, J, skip_step = 10):
     state = thermalized_state.copy()
